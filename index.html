@@ -73,38 +73,31 @@
       white-space: pre-wrap;
     }
 
-    /* Music Player Styles */
-    .music-player {
-      margin-top: 30px;
-      background: rgba(255, 255, 255, 0.15);
-      padding: 20px;
-      border-radius: 20px;
-      color: #fff;
-    }
-
-    .song-img {
-      border-radius: 20px;
-      margin-bottom: 15px;
-    }
-
-    input[type="range"] {
-      width: 80%;
-      margin: 10px 0;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      font-size: 1.8rem;
-      margin-top: 10px;
+    /* Music Button */
+    #musicBtn {
+      display: inline-block;
+      padding: 15px 35px;
+      margin-top: 20px;
+      font-size: 1.4rem;
+      background: #fff;
+      color: #5a0f87;
+      font-weight: bold;
+      border: none;
+      border-radius: 25px;
       cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      transition: 0.3s ease;
+    }
+
+    #musicBtn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
     }
 
     @media (max-width: 480px) {
       .container { padding: 20px; }
       h1 { font-size: 2.2rem; }
-      .controls { font-size: 1.5rem; gap: 15px; }
+      #musicBtn { font-size: 1.2rem; padding: 12px 25px; }
     }
   </style>
 </head>
@@ -125,23 +118,11 @@
     <p id="message"></p>
 
     <!-- Music Player -->
-    <div class="music-player">
-      <img src="cloud image.jpg" alt="song-image" class="song-img" width="250px" height="250px">
-      <h2>Hallelujah Eh</h2>
-      <p>Dave Agbor ft BBO</p>
+    <audio id="song">
+      <source src="a-thousand-years.mp3" type="audio/mp3">
+    </audio>
+    <button id="musicBtn">Play Music</button>
 
-      <audio id="song">
-        <source src="Hallelujah Eh.mpeg" type="audio/mpeg">
-      </audio>
-
-      <input type="range" value="0" id="progress">
-
-      <div class="controls">
-        <div><i class="fa-solid fa-backward"></i></div>
-        <div onclick="playPause()"><i class="fa-solid fa-play" id="ctrlIcon"></i></div>
-        <div><i class="fa-solid fa-forward"></i></div>
-      </div>
-    </div>
   </div>
 
   <script>
@@ -161,6 +142,7 @@
       }
 
       function showMessage() {
+        playMusic(); // start music automatically
         const msg = `My love… today I celebrate you, but I won’t lie my heart aches with how much I adore you. You walk into a room and suddenly I’m breathing differently, feeling differently, wanting nothing but you. Loving you has stretched me, undone me, rebuilt me, and still leaves me wanting more every single day.`;
 
         const el = document.getElementById('message');
@@ -186,40 +168,28 @@
     });
 
     // Music Player
-    const progress = document.getElementById("progress");
     const song = document.getElementById("song");
-    const ctrlIcon = document.getElementById("ctrlIcon");
+    const musicBtn = document.getElementById("musicBtn");
+    let isPlaying = false;
 
-    song.onloadedmetadata = function(){
-      progress.max = song.duration;
-      progress.value = song.currentTime;
-    }
-
-    function playPause(){
-      if (ctrlIcon.classList.contains("fa-pause")){
-        song.pause();
-        ctrlIcon.classList.remove("fa-pause");
-        ctrlIcon.classList.add("fa-play");
-      }
-      else{
-        song.play();
-        ctrlIcon.classList.add("fa-pause");
-        ctrlIcon.classList.remove("fa-play");
+    function playMusic(){
+      if(!isPlaying){
+        song.play().then(()=>{ 
+          musicBtn.innerText = "Pause Music";
+          isPlaying = true;
+        }).catch(()=>{});
       }
     }
 
-    setInterval(()=>{
-      progress.value = song.currentTime;
-    }, 500);
-
-    progress.onchange = function(){
-      song.currentTime = progress.value;
+    musicBtn.addEventListener("click", function(){
       if(song.paused){
-        song.play();
-        ctrlIcon.classList.add("fa-pause");
-        ctrlIcon.classList.remove("fa-play");
+        song.play().then(()=>{ musicBtn.innerText = "Pause Music"; isPlaying = true; }).catch(()=>{});
+      } else {
+        song.pause();
+        musicBtn.innerText = "Play Music";
+        isPlaying = false;
       }
-    }
+    });
   </script>
 </body>
 </html>
