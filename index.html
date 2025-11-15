@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -111,88 +111,89 @@
       You deserve the world, and yet all I have to offer is this heart that beats too hard whenever your name crosses my mind.
     </p>
 
-    <button id="surpriseBtn" class="button">Click this button</button>
-    <button id="musicBtn" class="button">Play Music</button>
+    <!-- onclick wired directly so it works even if JS timing is weird -->
+    <button class="button" id="surpriseBtn" onclick="showMessage()">Click this button</button>
+    <button class="button" id="musicBtn" onclick="toggleMusic()">Play Music</button>
 
     <p id="message"></p>
 
-    <!-- ===== REPLACED AUDIO TAG AS REQUESTED ===== -->
+    <!-- Your requested audio tag -->
     <audio id="song">
-        <source src="a-thousand-years.mp3" type="audio/mp3">
+      <source src="a-thousand-years.mp3" type="audio/mp3">
+      Your browser does not support the audio element.
     </audio>
   </div>
 
+  <!-- Script at the VERY END so DOM is already loaded -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const audio = document.getElementById('song');
-      const musicBtn = document.getElementById('musicBtn');
-      let musicStarted = false;
+    // Grab elements
+    const audio = document.getElementById('song');
+    const musicBtn = document.getElementById('musicBtn');
+    const messageEl = document.getElementById('message');
 
-      // Start music the first time button is clicked
-      function playMusic() {
-        if (!musicStarted) {
-          audio.play().then(() => {
-            musicStarted = true;
-            musicBtn.innerText = "Pause Music";
-          }).catch(() => {
-            // Browser requires manual interaction
-          });
-        }
+    let musicStarted = false;
+
+    function toggleMusic() {
+      if (!audio) return;
+
+      if (audio.paused) {
+        audio.play().then(() => {
+          musicBtn.innerText = "Pause Music";
+        }).catch(() => {
+          // Some in-app browsers block sound until user interacts strongly
+          alert("If you don't hear anything, your browser/app may be blocking audio. Try opening this page in Chrome or your main browser.");
+        });
+      } else {
+        audio.pause();
+        musicBtn.innerText = "Play Music";
       }
+    }
 
-      // Toggle Play / Pause button
-      function toggleMusic() {
-        if (audio.paused) {
-          audio.play().then(() => { musicBtn.innerText = "Pause Music"; }).catch(() => {});
+    function playMusicOnce() {
+      if (!musicStarted) {
+        toggleMusic(); // will start it
+        musicStarted = true;
+      }
+    }
+
+    function startContinuousConfetti() {
+      if (typeof confetti !== 'function') {
+        return; // don't crash if library didn't load
+      }
+      if (window.continuousConfetti) return;
+      window.continuousConfetti = setInterval(() => {
+        confetti({
+          particleCount: 4,
+          startVelocity: 10,
+          spread: 100,
+          origin: { x: Math.random(), y: 0 },
+          gravity: 0.5
+        });
+      }, 200);
+    }
+
+    function showMessage() {
+      playMusicOnce();
+
+      const msg = My love… today I celebrate you, but I won’t lie my heart aches with how much I adore you. I don’t think you fully understand the kind of hold you have on me. You walk into a room and suddenly I’m breathing differently, feeling differently, wanting nothing but you. Loving you has stretched me, undone me, rebuilt me, and somehow still leaves me wanting more of you every single day. There are moments I look at you and my chest tightens because I can’t believe someone like you chose someone like me.;
+
+      messageEl.innerText = '';
+      messageEl.style.display = 'block';
+
+      let i = 0;
+      function typeWriter() {
+        if (i < msg.length) {
+          messageEl.innerText += msg.charAt(i);
+          i++;
+          setTimeout(typeWriter, 30);
         } else {
-          audio.pause();
-          musicBtn.innerText = "Play Music";
+          startContinuousConfetti();
         }
       }
+      typeWriter();
 
-      musicBtn.addEventListener('click', toggleMusic);
-
-      // Confetti
-      function startContinuousConfetti() {
-        if (window.continuousConfetti) return;
-        window.continuousConfetti = setInterval(() => {
-          confetti({
-            particleCount: 4,
-            startVelocity: 10,
-            spread: 100,
-            origin: { x: Math.random(), y: 0 },
-            gravity: 0.5
-          });
-        }, 200);
-      }
-
-      // Typewriter message
-      function showMessage() {
-        playMusic();
-
-        const msg = My love… today I celebrate you, but I won’t lie my heart aches with how much I adore you. I don’t think you fully understand the kind of hold you have on me. You walk into a room and suddenly I’m breathing differently, feeling differently, wanting nothing but you. Loving you has stretched me, undone me, rebuilt me, and somehow still leaves me wanting more of you every single day. There are moments I look at you and my chest tightens because I can’t believe someone like you chose someone like me.;
-
-        const el = document.getElementById('message');
-        el.innerText = '';
-        el.style.display = 'block';
-
-        let i = 0;
-        function typeWriter() {
-          if (i < msg.length) {
-            el.innerText += msg.charAt(i);
-            i++;
-            setTimeout(typeWriter, 30);
-          } else {
-            startContinuousConfetti();
-          }
-        }
-        typeWriter();
-
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-
-      document.getElementById('surpriseBtn').addEventListener('click', showMessage);
-    });
+      messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   </script>
 </body>
 </html>
