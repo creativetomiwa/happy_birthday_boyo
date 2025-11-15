@@ -107,7 +107,7 @@
     <h1>Happy Birthday, Boyo</h1>
     <p>
       Happy birthday, my angel, my sunshine, my wife, my favorite kind of problem. I LOVE YOU.<br>
-      On your birthday, I just want you to feel the depth of this love raw, restless, unfiltered. You are my softness, my craving, and the one person I never want to imagine life without..<br><br>
+      On your birthday, I want you to feel the depth of this love raw, restless, unfiltered. You are my softness, my craving, and the one person I never want to imagine life without..<br><br>
       You deserve the world, and yet all I have to offer is this heart that beats too hard whenever your name crosses my mind.
     </p>
 
@@ -116,8 +116,11 @@
 
     <p id="message"></p>
 
-    <!-- Single Audio tag -->
-    <audio id="bgAudio" src="a-thousand-years.mp3" loop></audio>
+    <!-- Audio element -->
+    <audio id="bgAudio" loop>
+      <source src="a-thousand-years.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
   </div>
 
   <script>
@@ -126,22 +129,22 @@
       const musicBtn = document.getElementById('musicBtn');
       let musicStarted = false;
 
+      // Start music the first time button is clicked
       function playMusic() {
         if (!musicStarted) {
           audio.play().then(() => {
             musicStarted = true;
             musicBtn.innerText = "Pause Music";
           }).catch(() => {
-            // Playback failed (e.g. browser blocked) – user can tap Play Music manually
+            // Browser may block autoplay, user can click Play
           });
         }
       }
 
+      // Toggle Play / Pause button
       function toggleMusic() {
         if (audio.paused) {
-          audio.play().then(() => {
-            musicBtn.innerText = "Pause Music";
-          }).catch(() => {});
+          audio.play().then(() => { musicBtn.innerText = "Pause Music"; }).catch(() => {});
         } else {
           audio.pause();
           musicBtn.innerText = "Play Music";
@@ -166,9 +169,9 @@
 
       // Typewriter message
       function showMessage() {
-        playMusic();
+        playMusic(); // start music on first click
 
-        const msg = My love… today I celebrate you, but I won’t lie my heart aches with how much I adore you. I don’t think you fully understand the kind of hold you have on me. You walk into a room and suddenly I’m breathing differently, feeling differently, wanting nothing but you. Loving you has stretched me, undone me, rebuilt me, and somehow still leaves me wanting more of you every single day. There are moments I look at you and my chest tightens because I can’t believe someone like you chose someone like me.;
+        const msg = `My love… today I celebrate you, but I won’t lie my heart aches with how much I adore you. I don’t think you fully understand the kind of hold you have on me. You walk into a room and suddenly I’m breathing differently, feeling differently, wanting nothing but you. Loving you has stretched me, undone me, rebuilt me, and somehow still leaves me wanting more of you every single day. There are moments I look at you and my chest tightens because I can’t believe someone like you chose someone like me.`;
 
         const el = document.getElementById('message');
         el.innerText = '';
