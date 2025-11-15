@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Happy Birthday, Love</title>
 
-  <!-- Confetti library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
@@ -31,3 +30,162 @@
       font-size: 3rem;
       margin-bottom: 10px;
       color: #ffffff;
+      animation: fadeIn 2s ease;
+    }
+
+    p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      animation: fadeIn 2s ease;
+      color: #f8eaff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .heart {
+      font-size: 4rem;
+      color: #ffb7ff;
+      animation: beat 1s infinite;
+    }
+
+    @keyframes beat {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .button {
+      display: inline-block;
+      padding: 14px 30px;
+      margin-top: 25px;
+      font-size: 1.3rem;
+      background: #ffffff;
+      border-radius: 14px;
+      text-decoration: none;
+      color: #5a0f87;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      transition: 0.3s ease;
+      cursor: pointer;
+      border: none;
+      font-weight: bold;
+    }
+
+    .button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+    }
+
+    #message {
+      max-width: 640px;
+      margin: 30px auto 0;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      text-align: left;
+      font-size: 1.25rem;
+      color: #3a0059;
+      border: 2px solid #e9c2ff;
+      display: none;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 20px; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="heart">❤</div>
+
+    <h1>Happy Birthday, Boyo</h1>
+    <p>
+      Happy birthday, my angel, my sunshine, my wife, my favorite kind of problem. I LOVE YOU.<br>
+      On your birthday, I just want you to feel the depth of this love raw, restless, unfiltered. You are my softness, my craving, and the one person I never want to imagine life without..<br><br>
+      You deserve the world, and yet all I have to offer is this heart that beats too hard whenever your name crosses my mind.
+    </p>
+
+    <button id="surpriseBtn" class="button">Click this button</button>
+    <button id="musicBtn" class="button">Play Music</button>
+
+    <p id="message"></p>
+
+    <!-- Audio tag -->
+    <audio id="bgAudio" src="a-thousand-years.mp3" loop></audio>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const audio = document.getElementById('bgAudio');
+      let musicStarted = false;
+
+      function playMusic() {
+        if (!musicStarted) {
+          audio.play().catch(() => {});
+          musicStarted = true;
+          document.getElementById('musicBtn').innerText = "Pause Music";
+        }
+      }
+
+      function toggleMusic() {
+        if (audio.paused) {
+          audio.play().catch(() => {});
+          document.getElementById('musicBtn').innerText = "Pause Music";
+        } else {
+          audio.pause();
+          document.getElementById('musicBtn').innerText = "Play Music";
+        }
+      }
+
+      document.getElementById('musicBtn').addEventListener('click', toggleMusic);
+
+      // Confetti
+      function startContinuousConfetti() {
+        if (window.continuousConfetti) return;
+        window.continuousConfetti = setInterval(() => {
+          confetti({
+            particleCount: 4,
+            startVelocity: 10,
+            spread: 100,
+            origin: { x: Math.random(), y: 0 },
+            gravity: 0.5
+          });
+        }, 200);
+      }
+
+      // Typewriter message
+      function showMessage() {
+        playMusic();
+
+        const msg = `My love… today I celebrate you, but I won’t lie my heart aches with how much I adore you. I don’t think you fully understand the kind of hold you have on me. You walk into a room and suddenly I’m breathing differently, feeling differently, wanting nothing but you. Loving you has stretched me, undone me, rebuilt me, and somehow still leaves me wanting more of you every single day. There are moments I look at you and my chest tightens because I can’t believe someone like you chose someone like me.`;
+
+        const el = document.getElementById('message');
+        el.innerText = '';
+        el.style.display = 'block';
+
+        let i = 0;
+        function typeWriter() {
+          if (i < msg.length) {
+            el.innerText += msg.charAt(i);
+            i++;
+            setTimeout(typeWriter, 30);
+          } else {
+            startContinuousConfetti();
+          }
+        }
+        typeWriter();
+
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      document.getElementById('surpriseBtn').addEventListener('click', showMessage);
+    });
+  </script>
+</body>
+</html>
