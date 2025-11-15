@@ -60,7 +60,7 @@
     .button {
       display: inline-block;
       padding: 14px 30px;
-      margin-top: 25px;
+      margin-top: 20px;
       font-size: 1.3rem;
       background: #ffffff;
       border-radius: 14px;
@@ -124,75 +124,67 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const audio = document.getElementById('bgAudio');
-      const musicBtn = document.getElementById('musicBtn');
-      let musicStarted = false;
+    const audio = document.getElementById('bgAudio');
+    const musicBtn = document.getElementById('musicBtn');
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const messageEl = document.getElementById('message');
+    let musicPlaying = false;
 
-      // Start music the first time button is clicked
-      function playMusic() {
-        if (!musicStarted) {
-          audio.play().then(() => {
-            musicStarted = true;
-            musicBtn.innerText = "Pause Music";
-          }).catch(() => {
-            // Browser may block autoplay, user can click Play
-          });
-        }
+    // Toggle music
+    musicBtn.addEventListener('click', () => {
+      if(audio.paused){
+        audio.play();
+        musicBtn.innerText = "Pause Music";
+        musicPlaying = true;
+      } else {
+        audio.pause();
+        musicBtn.innerText = "Play Music";
+        musicPlaying = false;
+      }
+    });
+
+    // Confetti function
+    function startContinuousConfetti() {
+      if (window.confettiInterval) return;
+      window.confettiInterval = setInterval(() => {
+        confetti({
+          particleCount: 4,
+          startVelocity: 10,
+          spread: 100,
+          origin: { x: Math.random(), y: 0 },
+          gravity: 0.5
+        });
+      }, 200);
+    }
+
+    // Typewriter message and auto-play music
+    surpriseBtn.addEventListener('click', () => {
+      // Start music if not already playing
+      if(!musicPlaying){
+        audio.play();
+        musicBtn.innerText = "Pause Music";
+        musicPlaying = true;
       }
 
-      // Toggle Play / Pause button
-      function toggleMusic() {
-        if (audio.paused) {
-          audio.play().then(() => { musicBtn.innerText = "Pause Music"; }).catch(() => {});
+      // Show typewriter message
+      const msg = "My love… today I celebrate you, but I won’t lie my heart aches with how much I adore you. I don’t think you fully understand the kind of hold you have on me. You walk into a room and suddenly I’m breathing differently, feeling differently, wanting nothing but you. Loving you has stretched me, undone me, rebuilt me, and somehow still leaves me wanting more of you every single day. There are moments I look at you and my chest tightens because I can’t believe someone like you chose someone like me.";
+
+      messageEl.innerText = '';
+      messageEl.style.display = 'block';
+
+      let i = 0;
+      function typeWriter() {
+        if(i < msg.length){
+          messageEl.innerText += msg.charAt(i);
+          i++;
+          setTimeout(typeWriter, 30);
         } else {
-          audio.pause();
-          musicBtn.innerText = "Play Music";
+          startContinuousConfetti();
         }
       }
+      typeWriter();
 
-      musicBtn.addEventListener('click', toggleMusic);
-
-      // Confetti
-      function startContinuousConfetti() {
-        if (window.continuousConfetti) return;
-        window.continuousConfetti = setInterval(() => {
-          confetti({
-            particleCount: 4,
-            startVelocity: 10,
-            spread: 100,
-            origin: { x: Math.random(), y: 0 },
-            gravity: 0.5
-          });
-        }, 200);
-      }
-
-      // Typewriter message
-      function showMessage() {
-        playMusic(); // start music on first click
-
-        const msg = My love… today I celebrate you, but I won’t lie my heart aches with how much I adore you. I don’t think you fully understand the kind of hold you have on me. You walk into a room and suddenly I’m breathing differently, feeling differently, wanting nothing but you. Loving you has stretched me, undone me, rebuilt me, and somehow still leaves me wanting more of you every single day. There are moments I look at you and my chest tightens because I can’t believe someone like you chose someone like me.;
-
-        const el = document.getElementById('message');
-        el.innerText = '';
-        el.style.display = 'block';
-
-        let i = 0;
-        function typeWriter() {
-          if (i < msg.length) {
-            el.innerText += msg.charAt(i);
-            i++;
-            setTimeout(typeWriter, 30);
-          } else {
-            startContinuousConfetti();
-          }
-        }
-        typeWriter();
-
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-
-      document.getElementById('surpriseBtn').addEventListener('click', showMessage);
+      messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   </script>
 </body>
