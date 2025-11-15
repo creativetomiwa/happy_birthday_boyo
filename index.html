@@ -120,40 +120,25 @@
   </div>
 
   <script>
-document.addEventListener('DOMContentLoaded', function () {
-  // === Background Music ===
-  const audio = new Audio("https://drive.google.com/uc?export=download&id=1F8nR58ZH7XpTlKIWs-sQhH30c-8PKQG8");
+document.addEventListener('DOMContentLoaded', function() {
+  const audio = new Audio("a-thousand-years.mp3"); // file is in the same folder as index.html
+  audio.loop = true;
   audio.volume = 0.8;
-  let musicStarted = false;
 
+  let musicStarted = false;
   function playMusic() {
     if (!musicStarted) {
-      audio.play().catch(() => {});
+      audio.play().catch(() => {
+        console.log("Music blocked until user clicks the button");
+      });
       musicStarted = true;
     }
   }
 
-  // === Confetti ===
-  let continuousConfetti = null;
-
-  function startContinuousConfetti() {
-    if (continuousConfetti) return;
-    continuousConfetti = setInterval(() => {
-      confetti({
-        particleCount: 4,
-        startVelocity: 10,
-        spread: 100,
-        origin: { x: Math.random(), y: 0 },
-        gravity: 0.5
-      });
-    }, 200);
-  }
-
-  // === Show Message ===
   function showMessage() {
     playMusic();
 
-    const msg = `My love… today I celebrate you, but I won’t lie my heart aches with how much I adore you. I don’t think you fully understand the kind of hold you have on me. You walk into a room and suddenly I’m breathing differently, feeling differently, wanting nothing but you. Loving you has stretched me, undone me, rebuilt me, and somehow still leaves me wanting more of you every single day. There are moments I look at you and my chest tightens because I can’t believe someone like you chose someone like me.`;
+    const msg = `My love… today I celebrate you, but I won’t lie, my heart aches with how much I adore you. I don’t think you fully understand the hold you have on me. You walk into a room and suddenly I’m breathing differently, feeling differently, wanting nothing but you. Loving you has stretched me, undone me, rebuilt me, and somehow still leaves me wanting more of you every single day. There are moments I look at you and my chest tightens because I can’t believe someone like you chose someone like me.`;
 
     const el = document.getElementById('message');
     el.innerText = '';
@@ -169,9 +154,22 @@ document.addEventListener('DOMContentLoaded', function () {
         startContinuousConfetti();
       }
     }
-
     typeWriter();
+
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function startContinuousConfetti() {
+    if (window.continuousConfetti) return;
+    window.continuousConfetti = setInterval(() => {
+      confetti({
+        particleCount: 4,
+        startVelocity: 10,
+        spread: 100,
+        origin: { x: Math.random(), y: 0 },
+        gravity: 0.5
+      });
+    }, 200);
   }
 
   const btn = document.getElementById('surpriseBtn');
