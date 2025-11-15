@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -6,6 +6,7 @@
   <title>Happy Birthday, Love</title>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://kit.fontawesome.com/b247c91663.js" crossorigin="anonymous"></script>
 
   <style>
     body {
@@ -57,27 +58,6 @@
       100% { transform: scale(1); }
     }
 
-    .button {
-      display: inline-block;
-      padding: 14px 30px;
-      margin-top: 25px;
-      font-size: 1.3rem;
-      background: #ffffff;
-      border-radius: 14px;
-      text-decoration: none;
-      color: #5a0f87;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-      transition: 0.3s ease;
-      cursor: pointer;
-      border: none;
-      font-weight: bold;
-    }
-
-    .button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.35);
-    }
-
     #message {
       max-width: 640px;
       margin: 30px auto 0;
@@ -93,9 +73,38 @@
       white-space: pre-wrap;
     }
 
+    /* Music Player Styles */
+    .music-player {
+      margin-top: 30px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 20px;
+      border-radius: 20px;
+      color: #fff;
+    }
+
+    .song-img {
+      border-radius: 20px;
+      margin-bottom: 15px;
+    }
+
+    input[type="range"] {
+      width: 80%;
+      margin: 10px 0;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 1.8rem;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
     @media (max-width: 480px) {
       .container { padding: 20px; }
       h1 { font-size: 2.2rem; }
+      .controls { font-size: 1.5rem; gap: 15px; }
     }
   </style>
 </head>
@@ -111,88 +120,105 @@
       You deserve the world, and yet all I have to offer is this heart that beats too hard whenever your name crosses my mind.
     </p>
 
-    <!-- onclick wired directly so it works even if JS timing is weird -->
-    <button class="button" id="surpriseBtn" onclick="showMessage()">Click this button</button>
-    <button class="button" id="musicBtn" onclick="toggleMusic()">Play Music</button>
+    <button id="surpriseBtn" class="button">Click this button</button>
 
     <p id="message"></p>
 
-    <!-- Your requested audio tag -->
-    <audio id="song">
-      <source src="a-thousand-years.mp3" type="audio/mp3">
-      Your browser does not support the audio element.
-    </audio>
+    <!-- Music Player -->
+    <div class="music-player">
+      <img src="cloud image.jpg" alt="song-image" class="song-img" width="250px" height="250px">
+      <h2>Hallelujah Eh</h2>
+      <p>Dave Agbor ft BBO</p>
+
+      <audio id="song">
+        <source src="Hallelujah Eh.mpeg" type="audio/mpeg">
+      </audio>
+
+      <input type="range" value="0" id="progress">
+
+      <div class="controls">
+        <div><i class="fa-solid fa-backward"></i></div>
+        <div onclick="playPause()"><i class="fa-solid fa-play" id="ctrlIcon"></i></div>
+        <div><i class="fa-solid fa-forward"></i></div>
+      </div>
+    </div>
   </div>
 
-  <!-- Script at the VERY END so DOM is already loaded -->
   <script>
-    // Grab elements
-    const audio = document.getElementById('song');
-    const musicBtn = document.getElementById('musicBtn');
-    const messageEl = document.getElementById('message');
-
-    let musicStarted = false;
-
-    function toggleMusic() {
-      if (!audio) return;
-
-      if (audio.paused) {
-        audio.play().then(() => {
-          musicBtn.innerText = "Pause Music";
-        }).catch(() => {
-          // Some in-app browsers block sound until user interacts strongly
-          alert("If you don't hear anything, your browser/app may be blocking audio. Try opening this page in Chrome or your main browser.");
-        });
-      } else {
-        audio.pause();
-        musicBtn.innerText = "Play Music";
+    // Confetti & Typewriter
+    document.addEventListener('DOMContentLoaded', function() {
+      function startContinuousConfetti() {
+        if (window.continuousConfetti) return;
+        window.continuousConfetti = setInterval(() => {
+          confetti({
+            particleCount: 4,
+            startVelocity: 10,
+            spread: 100,
+            origin: { x: Math.random(), y: 0 },
+            gravity: 0.5
+          });
+        }, 200);
       }
-    }
 
-    function playMusicOnce() {
-      if (!musicStarted) {
-        toggleMusic(); // will start it
-        musicStarted = true;
-      }
-    }
+      function showMessage() {
+        const msg = `My love… today I celebrate you, but I won’t lie my heart aches with how much I adore you. You walk into a room and suddenly I’m breathing differently, feeling differently, wanting nothing but you. Loving you has stretched me, undone me, rebuilt me, and still leaves me wanting more every single day.`;
 
-    function startContinuousConfetti() {
-      if (typeof confetti !== 'function') {
-        return; // don't crash if library didn't load
-      }
-      if (window.continuousConfetti) return;
-      window.continuousConfetti = setInterval(() => {
-        confetti({
-          particleCount: 4,
-          startVelocity: 10,
-          spread: 100,
-          origin: { x: Math.random(), y: 0 },
-          gravity: 0.5
-        });
-      }, 200);
-    }
+        const el = document.getElementById('message');
+        el.innerText = '';
+        el.style.display = 'block';
 
-    function showMessage() {
-      playMusicOnce();
-
-      const msg = My love… today I celebrate you, but I won’t lie my heart aches with how much I adore you. I don’t think you fully understand the kind of hold you have on me. You walk into a room and suddenly I’m breathing differently, feeling differently, wanting nothing but you. Loving you has stretched me, undone me, rebuilt me, and somehow still leaves me wanting more of you every single day. There are moments I look at you and my chest tightens because I can’t believe someone like you chose someone like me.;
-
-      messageEl.innerText = '';
-      messageEl.style.display = 'block';
-
-      let i = 0;
-      function typeWriter() {
-        if (i < msg.length) {
-          messageEl.innerText += msg.charAt(i);
-          i++;
-          setTimeout(typeWriter, 30);
-        } else {
-          startContinuousConfetti();
+        let i = 0;
+        function typeWriter() {
+          if (i < msg.length) {
+            el.innerText += msg.charAt(i);
+            i++;
+            setTimeout(typeWriter, 30);
+          } else {
+            startContinuousConfetti();
+          }
         }
-      }
-      typeWriter();
+        typeWriter();
 
-      messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      document.getElementById('surpriseBtn').addEventListener('click', showMessage);
+    });
+
+    // Music Player
+    const progress = document.getElementById("progress");
+    const song = document.getElementById("song");
+    const ctrlIcon = document.getElementById("ctrlIcon");
+
+    song.onloadedmetadata = function(){
+      progress.max = song.duration;
+      progress.value = song.currentTime;
+    }
+
+    function playPause(){
+      if (ctrlIcon.classList.contains("fa-pause")){
+        song.pause();
+        ctrlIcon.classList.remove("fa-pause");
+        ctrlIcon.classList.add("fa-play");
+      }
+      else{
+        song.play();
+        ctrlIcon.classList.add("fa-pause");
+        ctrlIcon.classList.remove("fa-play");
+      }
+    }
+
+    setInterval(()=>{
+      progress.value = song.currentTime;
+    }, 500);
+
+    progress.onchange = function(){
+      song.currentTime = progress.value;
+      if(song.paused){
+        song.play();
+        ctrlIcon.classList.add("fa-pause");
+        ctrlIcon.classList.remove("fa-play");
+      }
     }
   </script>
 </body>
